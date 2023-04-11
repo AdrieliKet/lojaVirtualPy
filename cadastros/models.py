@@ -45,7 +45,7 @@ class Subcategoria(models.Model):
     def __str__(self):
         return f"{self.nome_subcategoria} ({self.descricao_subcategoria})"
 
-class Usuario(models.Model):
+class Promocao(models.Model):
     data_inclusao = models.DateTimeField(
         auto_now=True, verbose_name="data inclusão")
     data_alteracao = models.DateTimeField(
@@ -53,17 +53,14 @@ class Usuario(models.Model):
     data_exclusao = models.DateTimeField(
         auto_now=True, verbose_name="data exclusão")
     ativo: models.BooleanField
-    nome_usuario: models.CharField(max_length=50, verbose_name="nome usuário")
-    sobrenome_usuario: models.CharField(
-        max_length=50, verbose_name="sobrenome usuário")
-    email: models.EmailField(max_length=100, unique=True)
-    senha: models.CharField(max_length=10)
-    empresa: Empresa
-    data_ultimo_registro: models.DateTimeField(
-        auto_now_add=True, verbose_name="data do último registro")
+    titulo_promocao: models.CharField(max_length=50, verbose_name="titulo promoção")
+    data_inicio= models.DateTimeField()
+    data_fim = models.DateTimeField()
+    descricao: models.CharField(max_length=200, verbose_name="descrição")
+    valor: models.DecimalField(decimal_places=2)
 
     def __str__(self):
-        return f"{self.nome_usuario}"
+        return f"{self.titulo}"
 
     class Meta:
-        verbose_name: "Usuário"
+        verbose_name: "Promoção"
