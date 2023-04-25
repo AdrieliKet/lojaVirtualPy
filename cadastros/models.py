@@ -9,7 +9,7 @@ class Empresa(models.Model):
     documento = models.CharField(max_length=18, help_text="CNPJ ou CPF")
     endereco = models.CharField(max_length=100, verbose_name="endereço")
     data_inclusao = models.DateTimeField(
-        auto_now=True, verbose_name="data inclusão")
+        auto_now_add=True, verbose_name="data inclusão")
     data_alteracao = models.DateTimeField(
         auto_now=True, verbose_name="data alteração")
     data_exclusao = models.DateTimeField(
@@ -23,7 +23,7 @@ class Empresa(models.Model):
 class Categoria(models.Model):
     nome = models.CharField(max_length=50)
     descricao = models.CharField(max_length=100, verbose_name="descrição")
-    data_inclusao = models.DateTimeField(auto_now=True, verbose_name="data inclusão")
+    data_inclusao = models.DateTimeField(auto_now_add=True, verbose_name="data inclusão")
     data_alteracao = models.DateTimeField(auto_now=True, verbose_name="data alteração")
     data_exclusao = models.DateTimeField(auto_now=True, verbose_name="data exclusão")
 
@@ -36,7 +36,7 @@ class Subcategoria(models.Model):
     descricao_subcategoria = models.CharField(max_length=100)
     categoria_principal = models.ForeignKey(Categoria, on_delete=models.PROTECT)
     data_inclusao = models.DateTimeField(
-        auto_now=True, verbose_name="data inclusão")
+        auto_now_add=True, verbose_name="data inclusão")
     data_alteracao = models.DateTimeField(
         auto_now=True, verbose_name="data alteração")
     data_exclusao = models.DateTimeField(
@@ -47,7 +47,7 @@ class Subcategoria(models.Model):
 
 class Promocao(models.Model):
     data_inclusao = models.DateTimeField(
-        auto_now=True, verbose_name="data inclusão")
+        auto_now_add=True, verbose_name="data inclusão")
     data_alteracao = models.DateTimeField(
         auto_now=True, verbose_name="data alteração")
     data_exclusao = models.DateTimeField(
@@ -60,7 +60,46 @@ class Promocao(models.Model):
     valor: models.DecimalField(decimal_places=2)
 
     def __str__(self):
-        return f"{self.titulo}"
+        return f"{self.titulo} ({self.descricao})"
 
     class Meta:
         verbose_name: "Promoção"
+
+class Produto(models.Model):
+    data_inclusao = models.DateTimeField(
+        auto_now_add=True, verbose_name="data inclusão")
+    data_alteracao = models.DateTimeField(
+        auto_now=True, verbose_name="data alteração")
+    data_exclusao = models.DateTimeField(
+        auto_now=True, verbose_name="data exclusão")
+    ativo: models.BooleanField
+    nome_produto: models.CharField(max_length=50)
+    descricao: models.CharField(max_length=200, verbose_name="descrição")
+    preco: models.DecimalField(decimal_places=2)
+    categoria = models.ForeignKey(Categoria, on_delete=models.PROTECT)
+    subcategoria = models.ForeignKey(Subcategoria, on_delete=models.PROTECT)
+
+    def __str__(self):
+        return f"{self.nome_produto} ({self.descricao})"
+    
+class Venda(models.Model):
+    data_inclusao = models.DateTimeField(
+        auto_now_add=True, verbose_name="data inclusão")
+    data_alteracao = models.DateTimeField(
+        auto_now=True, verbose_name="data alteração")
+    data_exclusao = models.DateTimeField(
+        auto_now=True, verbose_name="data exclusão")
+    ativo: models.BooleanField
+    nome_cliente: models.CharField(max_length=50)
+    endereco_montagem: models.CharField(
+        max_length=200, verbose_name="endereço montagem")
+    pegue_monte: models.BooleanField
+    telefone_cliente = models.CharField(max_length=15)
+    data_venda = models.DateTimeField()
+    total: models.DecimalField(decimal_places=2)
+    pago: models.BooleanField
+    data_pagamento = models.DateTimeField()
+    promocao = models.ForeignKey(Promocao, on_delete=models.PROTECT)
+
+    def __str__(self):
+        return f"{self.nome_cliente} ({self.data_venda})"
