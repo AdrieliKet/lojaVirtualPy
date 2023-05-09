@@ -58,7 +58,7 @@ class PromocaoCreate(CreateView):
 
 class ProdutoCreate(CreateView):
     model = Produto
-    fields = ["nome_produto", "descricao", "preco", "categoria", "subcategoria"]
+    fields = ["nome_produto", "descricao", "preco", "subcategoria"]
     template_name = "cadastros/form.html"
     success_url = reverse_lazy("listar-produto")
 
@@ -133,7 +133,7 @@ class PromocaoUpdate(UpdateView):
 
 class ProdutoUpdate(UpdateView):
     model = Produto
-    fields = ["nome_produto", "descricao", "preco"]
+    fields = ["nome_produto", "descricao", "preco", "subcategoria"]
     template_name = "cadastros/form.html"
     success_url = reverse_lazy("listar-produto")
 

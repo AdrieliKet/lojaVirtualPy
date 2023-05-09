@@ -76,7 +76,6 @@ class Produto(models.Model):
     nome_produto = models.CharField(max_length=50)
     descricao = models.CharField(max_length=200, verbose_name="descrição")
     preco = models.DecimalField(decimal_places=2, max_digits=11)
-    categoria = models.ForeignKey(Categoria, on_delete=models.PROTECT)
     subcategoria = models.ForeignKey(Subcategoria, on_delete=models.PROTECT)
 
     def __str__(self):
