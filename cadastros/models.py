@@ -13,7 +13,7 @@ class Empresa(models.Model):
     data_alteracao = models.DateTimeField(
         auto_now=True, verbose_name="data alteração")
     data_exclusao = models.DateTimeField(
-        auto_now=True, verbose_name="data exclusão")
+        verbose_name="data exclusão", null=True)
     status = models.BooleanField
 
     def __str__(self):
@@ -25,7 +25,8 @@ class Categoria(models.Model):
     descricao = models.CharField(max_length=100, verbose_name="descrição")
     data_inclusao = models.DateTimeField(auto_now_add=True, verbose_name="data inclusão")
     data_alteracao = models.DateTimeField(auto_now=True, verbose_name="data alteração")
-    data_exclusao = models.DateTimeField(auto_now=True, verbose_name="data exclusão")
+    data_exclusao = models.DateTimeField(
+        verbose_name="data exclusão", null=True)
 
     def __str__(self):
         return f"{self.nome} ({self.descricao})"
@@ -40,7 +41,7 @@ class Subcategoria(models.Model):
     data_alteracao = models.DateTimeField(
         auto_now=True, verbose_name="data alteração")
     data_exclusao = models.DateTimeField(
-        auto_now=True, verbose_name="data exclusão")
+        verbose_name="data exclusão", null=True)
 
     def __str__(self):
         return f"{self.nome_subcategoria} ({self.descricao_subcategoria})"
@@ -50,14 +51,13 @@ class Promocao(models.Model):
         auto_now_add=True, verbose_name="data inclusão")
     data_alteracao = models.DateTimeField(
         auto_now=True, verbose_name="data alteração")
-    data_exclusao = models.DateTimeField(
-        auto_now=True, verbose_name="data exclusão")
-    ativo: models.BooleanField
-    titulo_promocao: models.CharField(max_length=50, verbose_name="titulo promoção")
+    data_exclusao = models.DateTimeField(verbose_name="data exclusão", null=True)
+    ativo = models.BooleanField
+    titulo_promocao= models.CharField(max_length=50, verbose_name="titulo promoção")
     data_inicio= models.DateTimeField()
     data_fim = models.DateTimeField()
-    descricao: models.CharField(max_length=200, verbose_name="descrição")
-    valor: models.DecimalField(decimal_places=2)
+    descricao= models.CharField(max_length=200, verbose_name="descrição")
+    valor= models.DecimalField(decimal_places=2, max_digits=11)
 
     def __str__(self):
         return f"{self.titulo} ({self.descricao})"
@@ -72,10 +72,10 @@ class Produto(models.Model):
         auto_now=True, verbose_name="data alteração")
     data_exclusao = models.DateTimeField(
         auto_now=True, verbose_name="data exclusão")
-    ativo: models.BooleanField
-    nome_produto: models.CharField(max_length=50)
-    descricao: models.CharField(max_length=200, verbose_name="descrição")
-    preco: models.DecimalField(decimal_places=2)
+    ativo = models.BooleanField
+    nome_produto = models.CharField(max_length=50)
+    descricao = models.CharField(max_length=200, verbose_name="descrição")
+    preco = models.DecimalField(decimal_places=2, max_digits=11)
     categoria = models.ForeignKey(Categoria, on_delete=models.PROTECT)
     subcategoria = models.ForeignKey(Subcategoria, on_delete=models.PROTECT)
 
@@ -88,16 +88,14 @@ class Venda(models.Model):
     data_alteracao = models.DateTimeField(
         auto_now=True, verbose_name="data alteração")
     data_exclusao = models.DateTimeField(
-        auto_now=True, verbose_name="data exclusão")
-    ativo: models.BooleanField
-    nome_cliente: models.CharField(max_length=50)
-    endereco_montagem: models.CharField(
+        verbose_name="data exclusão", null=True)
+    ativo = models.BooleanField
+    nome_cliente = models.CharField(max_length=50)
+    endereco_montagem = models.CharField(
         max_length=200, verbose_name="endereço montagem")
-    pegue_monte: models.BooleanField
     telefone_cliente = models.CharField(max_length=15)
     data_venda = models.DateTimeField()
-    total: models.DecimalField(decimal_places=2)
-    pago: models.BooleanField
+    total = models.DecimalField(decimal_places=2, max_digits=11)
     data_pagamento = models.DateTimeField()
     promocao = models.ForeignKey(Promocao, on_delete=models.PROTECT)
 
