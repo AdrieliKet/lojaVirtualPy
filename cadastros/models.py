@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 # Create your models here.
 
@@ -15,6 +16,10 @@ class Empresa(models.Model):
     data_exclusao = models.DateTimeField(
         verbose_name="data exclusão", null=True)
     status = models.BooleanField
+    cadastrado_por = models.ForeignKey(User, on_delete=models.PROTECT, related_name='empresa_cadastrada')
+    alterado_por = models.ForeignKey(
+        User, on_delete=models.PROTECT, related_name='empresa_atualizada')
+
 
     def __str__(self):
         return f"{self.nome} ({self.documento})"
@@ -27,6 +32,10 @@ class Categoria(models.Model):
     data_alteracao = models.DateTimeField(auto_now=True, verbose_name="data alteração")
     data_exclusao = models.DateTimeField(
         verbose_name="data exclusão", null=True)
+    cadastrado_por = models.ForeignKey(
+        User, on_delete=models.PROTECT, related_name='categoria_cadastrada')
+    alterado_por = models.ForeignKey(User, on_delete=models.PROTECT, related_name='categoria_atualizada')
+
 
     def __str__(self):
         return f"{self.nome} ({self.descricao})"
@@ -42,6 +51,9 @@ class Subcategoria(models.Model):
         auto_now=True, verbose_name="data alteração")
     data_exclusao = models.DateTimeField(
         verbose_name="data exclusão", null=True)
+    cadastrado_por = models.ForeignKey(User, on_delete=models.PROTECT, related_name='subcategoria_cadastrada')
+    alterado_por = models.ForeignKey(User, on_delete=models.PROTECT, related_name='subcategoria_atualizada')
+
 
     def __str__(self):
         return f"{self.nome_subcategoria} ({self.descricao_subcategoria})"
@@ -58,6 +70,9 @@ class Promocao(models.Model):
     data_fim = models.DateTimeField()
     descricao= models.CharField(max_length=200, verbose_name="descrição")
     valor= models.DecimalField(decimal_places=2, max_digits=11)
+    cadastrado_por = models.ForeignKey(User, on_delete=models.PROTECT, related_name='promocao_cadastrada')
+    alterado_por = models.ForeignKey(User, on_delete=models.PROTECT, related_name='promocao_atualizada')
+
 
     def __str__(self):
         return f"{self.titulo} ({self.descricao})"
@@ -77,6 +92,10 @@ class Produto(models.Model):
     descricao = models.CharField(max_length=200, verbose_name="descrição")
     preco = models.DecimalField(decimal_places=2, max_digits=11)
     subcategoria = models.ForeignKey(Subcategoria, on_delete=models.PROTECT)
+    cadastrado_por = models.ForeignKey(User, on_delete=models.PROTECT, related_name='produto_cadastrado')
+    alterado_por = models.ForeignKey(
+        User, on_delete=models.PROTECT, related_name='produto_atualizado')
+
 
     def __str__(self):
         return f"{self.nome_produto} ({self.descricao})"
@@ -97,6 +116,11 @@ class Venda(models.Model):
     total = models.DecimalField(decimal_places=2, max_digits=11)
     data_pagamento = models.DateTimeField()
     promocao = models.ForeignKey(Promocao, on_delete=models.PROTECT)
+    cadastrado_por = models.ForeignKey(
+        User, on_delete=models.PROTECT, related_name='venda_cadastrada')
+    alterado_por = models.ForeignKey(
+        User, on_delete=models.PROTECT, related_name='venda_atualizada')
+
 
     def __str__(self):
         return f"{self.nome_cliente} ({self.data_venda})"
