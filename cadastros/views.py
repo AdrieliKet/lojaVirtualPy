@@ -24,7 +24,7 @@ class EmpresaCreate(CreateView, LoginRequiredMixin):
 
     def form_valid(self, form):
         form.instance.cadastrado_por = self.request.user
-        form.instance.atualizado_por = self.request.user
+        form.instance.alterado_por = self.request.user
         return super().form_valid(form)
 
 
@@ -41,7 +41,7 @@ class CategoriaCreate(CreateView, LoginRequiredMixin):
 
     def form_valid(self, form):
         form.instance.cadastrado_por = self.request.user
-        form.instance.atualizado_por = self.request.user
+        form.instance.alterado_por = self.request.user
         return super().form_valid(form)
 
 
@@ -59,7 +59,7 @@ class SubcategoriaCreate(CreateView, LoginRequiredMixin):
 
     def form_valid(self, form):
         form.instance.cadastrado_por = self.request.user
-        form.instance.atualizado_por = self.request.user
+        form.instance.alterado_por = self.request.user
         return super().form_valid(form)
 
 
@@ -76,7 +76,7 @@ class PromocaoCreate(CreateView, LoginRequiredMixin):
 
     def form_valid(self, form):
         form.instance.cadastrado_por = self.request.user
-        form.instance.atualizado_por = self.request.user
+        form.instance.alterado_por = self.request.user
         return super().form_valid(form)
 
 
@@ -93,7 +93,7 @@ class ProdutoCreate(CreateView, LoginRequiredMixin):
 
     def form_valid(self, form):
         form.instance.cadastrado_por = self.request.user
-        form.instance.atualizado_por = self.request.user
+        form.instance.alterado_por = self.request.user
         return super().form_valid(form)
 
 
@@ -111,7 +111,7 @@ class VendaCreate(CreateView, LoginRequiredMixin):
 
     def form_valid(self, form):
         form.instance.cadastrado_por = self.request.user
-        form.instance.atualizado_por = self.request.user
+        form.instance.alterado_por = self.request.user
         return super().form_valid(form)
 
 #########################################################################################################################
@@ -129,7 +129,7 @@ class EmpresaUpdate(UpdateView, LoginRequiredMixin):
         return dados
     
     def form_valid(self, form):
-        form.instance.atualizado_por = self.request.user
+        form.instance.alterado_por = self.request.user
         return super().form_valid(form)
     
     def get_object(self):
@@ -149,7 +149,7 @@ class CategoriaUpdate(UpdateView, LoginRequiredMixin):
         return dados
     
     def form_valid(self, form):
-        form.instance.atualizado_por = self.request.user
+        form.instance.alterado_por = self.request.user
         return super().form_valid(form)
     
     def get_object(self):
@@ -171,7 +171,7 @@ class SubcategoriaUpdate(UpdateView, LoginRequiredMixin):
         return dados
 
     def form_valid(self, form):
-        form.instance.atualizado_por = self.request.user
+        form.instance.alterado_por = self.request.user
         return super().form_valid(form)
     
     def get_object(self):
@@ -193,7 +193,7 @@ class PromocaoUpdate(UpdateView, LoginRequiredMixin):
         return dados
     
     def form_valid(self, form):
-        form.instance.atualizado_por = self.request.user
+        form.instance.alterado_por = self.request.user
         return super().form_valid(form)
 
     def get_object(self):
@@ -214,7 +214,7 @@ class ProdutoUpdate(UpdateView, LoginRequiredMixin):
         return dados
     
     def form_valid(self, form):
-        form.instance.atualizado_por = self.request.user
+        form.instance.alterado_por = self.request.user
         return super().form_valid(form)
 
     def get_object(self):
@@ -235,7 +235,7 @@ class VendaUpdate(UpdateView, LoginRequiredMixin):
         return dados
     
     def form_valid(self, form):
-        form.instance.atualizado_por = self.request.user
+        form.instance.alterado_por = self.request.user
         return super().form_valid(form)
 
     def get_object(self):
@@ -320,7 +320,7 @@ class EmpresaList(ListView, LoginRequiredMixin):
     template_name = "cadastros/list/empresa.html"
 
     def get_queryset(self):
-        self.object_list = Empresa.objects.filter(cadastro_por=self.request.user)
+        self.object_list = Empresa.objects.filter(cadastrado_por=self.request.user)
         return self.object_list
 
 

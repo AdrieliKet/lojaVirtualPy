@@ -1,11 +1,10 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-# Create your models here.
 
 class Empresa(models.Model):
     nome = models.CharField(max_length=50)
-    email = models.EmailField(max_length=100, unique = True)
+    email = models.EmailField(max_length=100, unique=True)
     telefone = models.CharField(max_length=15)
     documento = models.CharField(max_length=18, help_text="CNPJ ou CPF")
     endereco = models.CharField(max_length=100, verbose_name="endereço")
@@ -15,14 +14,13 @@ class Empresa(models.Model):
         auto_now=True, verbose_name="data alteração")
     data_exclusao = models.DateTimeField(
         verbose_name="data exclusão", null=True)
-    status = models.BooleanField
+    status = models.BooleanField()
     cadastrado_por = models.ForeignKey(User, on_delete=models.PROTECT, related_name='empresa_cadastrada')
-    alterado_por = models.ForeignKey(
-        User, on_delete=models.PROTECT, related_name='empresa_atualizada')
-
+    alterado_por = models.ForeignKey(User, on_delete=models.PROTECT, related_name='empresa_atualizada')
 
     def __str__(self):
-        return f"{self.nome} ({self.documento})"
+        return self.nome
+
 
 
 class Categoria(models.Model):
@@ -32,8 +30,7 @@ class Categoria(models.Model):
     data_alteracao = models.DateTimeField(auto_now=True, verbose_name="data alteração")
     data_exclusao = models.DateTimeField(
         verbose_name="data exclusão", null=True)
-    cadastrado_por = models.ForeignKey(
-        User, on_delete=models.PROTECT, related_name='categoria_cadastrada')
+    cadastrado_por = models.ForeignKey(User, on_delete=models.PROTECT, related_name='categoria_cadastrada')
     alterado_por = models.ForeignKey(User, on_delete=models.PROTECT, related_name='categoria_atualizada')
 
 
@@ -93,8 +90,7 @@ class Produto(models.Model):
     preco = models.DecimalField(decimal_places=2, max_digits=11)
     subcategoria = models.ForeignKey(Subcategoria, on_delete=models.PROTECT)
     cadastrado_por = models.ForeignKey(User, on_delete=models.PROTECT, related_name='produto_cadastrado')
-    alterado_por = models.ForeignKey(
-        User, on_delete=models.PROTECT, related_name='produto_atualizado')
+    alterado_por = models.ForeignKey(User, on_delete=models.PROTECT, related_name='produto_atualizado')
 
 
     def __str__(self):
