@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     # Ativar complementos
     "crispy_forms",
     "crispy_bootstrap5",
+    'bootstrap5',
 ]
 
 MIDDLEWARE = [
@@ -140,5 +141,5 @@ CRISPY_TEMPLATE_PACK = 'bootstrap5'
 
 # Configurações de autenticação
 LOGIN_URL = "login"
-LOGOUT_REDIRECT_URL = "pagina-inicial"
-LOGIN_REDIRECT_URL = "pagina-inicial"
+LOGOUT_REDIRECT_URL = "sobre"
+LOGIN_REDIRECT_URL = "sobre"

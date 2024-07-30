@@ -5,12 +5,12 @@
 {% block conteudo %}
 <div class="row justify-content-center align-items-center mt-3">
     <div class="col-md-8">
-        <h3 class="">Lista de Produtos</h3>
+        <h3 class="">Lista de Vendas</h3>
     </div>
     <div class="col-md">
-        <a href="{% url 'cadastrar-produto' %}" class="btn btn-primary btn-sm">
+        <a href="{% url 'cadastrar-venda' %}" class="btn btn-primary btn-sm">
             <i class="bi bi-plus-lg"></i>
-            Novo Produto
+            Nova Venda
         </a>
     </div>
 </div>
@@ -21,18 +21,25 @@
     <table class="table table-striped">
         <thead>
             <tr>
-                <th>Nome</th>
-                <th>Descrição</th>
-                <th>Categoria Principal</th>
+                <th>Nome Cliente</th>
+                <th>Endereço de Montagem</th>
+                <th>Telefone Cliente</th>
+                <th>Data da Venda</th>
+                <th>Total</th>
+                <th>Data de Pagamento</th>
+                <th>Promoção</th>
             </tr>
         </thead>
         <tbody>
             {% for obj in object_list %}
             <tr class="">
-                <td>{{ obj.nome_produto }}</td>
-                <td>{{ obj.descricao }}</td>
-                <td>{{ obj.preco }}</td>
-                <td>{{ obj.subcategoria }}</td>
+                <td>{{ obj.nome_cliente }}</td>
+                <td>{{ obj.endereco_montagem }}</td>
+                <td>{{ obj.telefone_cliente }}</td>
+                <td>{{ obj.data_venda }}</td>
+                <td>{{ obj.total }}</td>
+                <td>{{ obj.data_pagamento }}</td>
+                <td>{{ obj.promocao }}</td>
                 <td>
                     <div class="dropdown">
                         <a class="btn btn-sm btn-outline-secondary dropdown-toggle" href="#" role="button"
@@ -40,9 +47,9 @@
                             <i class="bi bi-gear"></i>
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item text-primary" href="{% url 'editar-produto' obj.pk %}">
+                            <li><a class="dropdown-item text-primary" href="{% url 'editar-venda' obj.pk %}">
                                     <i class="bi bi-pencil-square"></i> Editar</a></li>
-                            <li><a class="dropdown-item text-danger" href="{% url 'excluir-produto' obj.pk %}">
+                            <li><a class="dropdown-item text-danger" href="{% url 'excluir-venda' obj.pk %}">
                                     <i class="bi bi-trash"></i> Excluir</a></li>
                         </ul>
                     </div>

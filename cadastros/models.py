@@ -14,9 +14,9 @@ class Empresa(models.Model):
         auto_now=True, verbose_name="data alteração")
     data_exclusao = models.DateTimeField(
         verbose_name="data exclusão", null=True)
-    status = models.BooleanField()
-    cadastrado_por = models.ForeignKey(User, on_delete=models.PROTECT, related_name='empresa_cadastrada')
-    alterado_por = models.ForeignKey(User, on_delete=models.PROTECT, related_name='empresa_atualizada')
+    status = models.BooleanField(default=True)
+    cadastrado_por = models.ForeignKey(User, on_delete=models.PROTECT, null=True, related_name='empresa_cadastrada')
+    alterado_por = models.ForeignKey(User, on_delete=models.PROTECT, null=True, related_name='empresa_atualizada')
 
     def __str__(self):
         return self.nome
@@ -30,8 +30,8 @@ class Categoria(models.Model):
     data_alteracao = models.DateTimeField(auto_now=True, verbose_name="data alteração")
     data_exclusao = models.DateTimeField(
         verbose_name="data exclusão", null=True)
-    cadastrado_por = models.ForeignKey(User, on_delete=models.PROTECT, related_name='categoria_cadastrada')
-    alterado_por = models.ForeignKey(User, on_delete=models.PROTECT, related_name='categoria_atualizada')
+    cadastrado_por = models.ForeignKey(User, on_delete=models.PROTECT, null=True, related_name='categoria_cadastrada')
+    alterado_por = models.ForeignKey(User, on_delete=models.PROTECT, null=True, related_name='categoria_atualizada')
 
 
     def __str__(self):
@@ -48,8 +48,8 @@ class Subcategoria(models.Model):
         auto_now=True, verbose_name="data alteração")
     data_exclusao = models.DateTimeField(
         verbose_name="data exclusão", null=True)
-    cadastrado_por = models.ForeignKey(User, on_delete=models.PROTECT, related_name='subcategoria_cadastrada')
-    alterado_por = models.ForeignKey(User, on_delete=models.PROTECT, related_name='subcategoria_atualizada')
+    cadastrado_por = models.ForeignKey(User, on_delete=models.PROTECT, null=True, related_name='subcategoria_cadastrada')
+    alterado_por = models.ForeignKey(User, on_delete=models.PROTECT, null=True, related_name='subcategoria_atualizada')
 
 
     def __str__(self):
@@ -67,12 +67,12 @@ class Promocao(models.Model):
     data_fim = models.DateTimeField()
     descricao= models.CharField(max_length=200, verbose_name="descrição")
     valor= models.DecimalField(decimal_places=2, max_digits=11)
-    cadastrado_por = models.ForeignKey(User, on_delete=models.PROTECT, related_name='promocao_cadastrada')
-    alterado_por = models.ForeignKey(User, on_delete=models.PROTECT, related_name='promocao_atualizada')
+    cadastrado_por = models.ForeignKey(User, on_delete=models.PROTECT, null=True, related_name='promocao_cadastrada')
+    alterado_por = models.ForeignKey(User, on_delete=models.PROTECT, null=True, related_name='promocao_atualizada')
 
 
     def __str__(self):
-        return f"{self.titulo} ({self.descricao})"
+        return f"{self.titulo_promocao} ({self.descricao})"
 
     class Meta:
         verbose_name: "Promoção"
@@ -89,8 +89,8 @@ class Produto(models.Model):
     descricao = models.CharField(max_length=200, verbose_name="descrição")
     preco = models.DecimalField(decimal_places=2, max_digits=11)
     subcategoria = models.ForeignKey(Subcategoria, on_delete=models.PROTECT)
-    cadastrado_por = models.ForeignKey(User, on_delete=models.PROTECT, related_name='produto_cadastrado')
-    alterado_por = models.ForeignKey(User, on_delete=models.PROTECT, related_name='produto_atualizado')
+    cadastrado_por = models.ForeignKey(User, on_delete=models.PROTECT, null=True, related_name='produto_cadastrado')
+    alterado_por = models.ForeignKey(User, on_delete=models.PROTECT, null=True, related_name='produto_atualizado')
 
 
     def __str__(self):
@@ -113,9 +113,9 @@ class Venda(models.Model):
     data_pagamento = models.DateTimeField()
     promocao = models.ForeignKey(Promocao, on_delete=models.PROTECT)
     cadastrado_por = models.ForeignKey(
-        User, on_delete=models.PROTECT, related_name='venda_cadastrada')
+        User, on_delete=models.PROTECT, null=True, related_name='venda_cadastrada')
     alterado_por = models.ForeignKey(
-        User, on_delete=models.PROTECT, related_name='venda_atualizada')
+        User, on_delete=models.PROTECT, null=True, related_name='venda_atualizada')
 
 
     def __str__(self):
