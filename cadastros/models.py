@@ -112,6 +112,8 @@ class Venda(models.Model):
     total = models.DecimalField(decimal_places=2, max_digits=11)
     data_pagamento = models.DateTimeField()
     promocao = models.ForeignKey(Promocao, on_delete=models.PROTECT)
+    pago = models.BooleanField(default=False)
+    pegue_monte = models.BooleanField(default=False)
     cadastrado_por = models.ForeignKey(
         User, on_delete=models.PROTECT, null=True, related_name='venda_cadastrada')
     alterado_por = models.ForeignKey(

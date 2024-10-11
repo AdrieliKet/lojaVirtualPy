@@ -100,7 +100,7 @@ class ProdutoCreate(CreateView, LoginRequiredMixin):
 class VendaCreate(CreateView, LoginRequiredMixin):
     model = Venda
     fields = ["nome_cliente", "endereco_montagem", "promocao",
-              "telefone_cliente", "data_venda", "total", "data_pagamento"]
+              "telefone_cliente", "data_venda", "total", "data_pagamento", "pago", "pegue_monte"]
     template_name = "cadastros/form.html"
     success_url = reverse_lazy("listar-venda")
 

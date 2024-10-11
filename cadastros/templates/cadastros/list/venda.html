@@ -4,7 +4,7 @@
 
 {% block conteudo %}
 <div class="row justify-content-center align-items-center mt-3">
-    <div class="col-md-8">
+    <div class="col-md-10">
         <h3 class="">Lista de Vendas</h3>
     </div>
     <div class="col-md">
@@ -28,6 +28,8 @@
                 <th>Total</th>
                 <th>Data de Pagamento</th>
                 <th>Promoção</th>
+                <th>Pago</th>
+                <th>Pegue e Monte</th>
             </tr>
         </thead>
         <tbody>
@@ -40,6 +42,8 @@
                 <td>{{ obj.total }}</td>
                 <td>{{ obj.data_pagamento }}</td>
                 <td>{{ obj.promocao }}</td>
+                <td>{{ obj.pago }}</td>
+                <td>{{ obj.pegue_monte }}</td>
                 <td>
                     <div class="dropdown">
                         <a class="btn btn-sm btn-outline-secondary dropdown-toggle" href="#" role="button"
