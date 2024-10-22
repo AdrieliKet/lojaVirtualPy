@@ -5,6 +5,8 @@ from .views import SubcategoriaCreate, SubcategoriaUpdate, SubcategoriaList, Sub
 from .views import PromocaoCreate, PromocaoUpdate, PromocaoList, PromocaoDetail, PromocaoDelete
 from .views import ProdutoCreate, ProdutoUpdate, ProdutoList, ProdutoDetail, ProdutoDelete
 from .views import VendaCreate, VendaUpdate, VendaList, VendaDetail, VendaDelete
+from .views import UserRegisterView, UserListView, UserUpdateView, UserDeleteView
+from .views import home
 
 urlpatterns = [
 
@@ -46,4 +48,11 @@ urlpatterns = [
     path("detalhar/promocao/<int:pk>/",  PromocaoDetail.as_view(), name="detalhar-promocao"),
     path("detalhar/produto/<int:pk>/", ProdutoDetail.as_view(), name="detalhar-produto"),
     path("detalhar/venda/<int:pk>/", VendaDetail.as_view(), name="detalhar-venda"),
+
+    path('register/', UserRegisterView.as_view(), name='user-register'),
+    path('usuarios/', UserListView.as_view(), name='listar-usuarios'),
+    path('editar/usuario/<int:pk>/', UserUpdateView.as_view(), name='editar-usuario'),
+    path('excluir/usuario/<int:pk>/', UserDeleteView.as_view(), name='excluir-usuario'),
+
+    path('', home, name='home'),
 ]

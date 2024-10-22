@@ -9,9 +9,22 @@ from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404
+from django.urls import reverse_lazy
+from .forms import CustomUserCreationForm
+from django.contrib.auth.mixins import UserPassesTestMixin
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+from django.shortcuts import redirect
+from django.shortcuts import render
 
 
-class EmpresaCreate(CreateView, LoginRequiredMixin):
+from django.views.generic.edit import CreateView
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.urls import reverse_lazy
+from django.shortcuts import redirect
+from .models import Empresa
+
+class EmpresaCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     model = Empresa
     fields = ["nome", "email", "telefone", "documento", "endereco"]
     template_name = "cadastros/form.html"
@@ -22,10 +35,17 @@ class EmpresaCreate(CreateView, LoginRequiredMixin):
         dados["titulo"] = "Cadastro de Empresa"
         return dados
 
-    # def form_valid(self, form):
-    #     form.instance.cadastrado_por = self.request.user
-    #     form.instance.alterado_por = self.request.user
-    #     return super().form_valid(form)
+    def form_valid(self, form):
+        form.instance.cadastrado_por = self.request.user
+        form.instance.alterado_por = self.request.user
+        return super().form_valid(form)
+
+    def test_func(self):
+        return self.request.user.is_superuser or self.request.user.groups.filter(name='admin').exists()
+
+    def handle_no_permission(self):
+        return redirect('login')
+
 
 
 class CategoriaCreate(CreateView, LoginRequiredMixin):
@@ -39,10 +59,10 @@ class CategoriaCreate(CreateView, LoginRequiredMixin):
         dados["titulo"] = "Cadastro de Categoria"
         return dados
 
-    # def form_valid(self, form):
-    #     form.instance.cadastrado_por = self.request.user
-    #     form.instance.alterado_por = self.request.user
-    #     return super().form_valid(form)
+    def form_valid(self, form):
+        form.instance.cadastrado_por = self.request.user
+        form.instance.alterado_por = self.request.user
+        return super().form_valid(form)
 
 
 class SubcategoriaCreate(CreateView, LoginRequiredMixin):
@@ -57,10 +77,10 @@ class SubcategoriaCreate(CreateView, LoginRequiredMixin):
         dados["titulo"] = "Cadastro de Subcategoria"
         return dados
 
-    # def form_valid(self, form):
-    #     form.instance.cadastrado_por = self.request.user
-    #     form.instance.alterado_por = self.request.user
-    #     return super().form_valid(form)
+    def form_valid(self, form):
+        form.instance.cadastrado_por = self.request.user
+        form.instance.alterado_por = self.request.user
+        return super().form_valid(form)
 
 
 class PromocaoCreate(CreateView, LoginRequiredMixin):
@@ -74,10 +94,10 @@ class PromocaoCreate(CreateView, LoginRequiredMixin):
         dados["titulo"] = "Cadastro de Promoção"
         return dados
 
-    # def form_valid(self, form):
-        # form.instance.cadastrado_por = self.request.user
-        # form.instance.alterado_por = self.request.user
-        # return super().form_valid(form)
+    def form_valid(self, form):
+        form.instance.cadastrado_por = self.request.user
+        form.instance.alterado_por = self.request.user
+        return super().form_valid(form)
 
 
 class ProdutoCreate(CreateView, LoginRequiredMixin):
@@ -91,10 +111,10 @@ class ProdutoCreate(CreateView, LoginRequiredMixin):
         dados["titulo"] = "Cadastro de Produtos"
         return dados
 
-    # def form_valid(self, form):
-    #     form.instance.cadastrado_por = self.request.user
-    #     form.instance.alterado_por = self.request.user
-    #     return super().form_valid(form)
+    def form_valid(self, form):
+        form.instance.cadastrado_por = self.request.user
+        form.instance.alterado_por = self.request.user
+        return super().form_valid(form)
 
 
 class VendaCreate(CreateView, LoginRequiredMixin):
@@ -109,16 +129,16 @@ class VendaCreate(CreateView, LoginRequiredMixin):
         dados["titulo"] = "Cadastro de Vendas"
         return dados
 
-    # def form_valid(self, form):
-    #     form.instance.cadastrado_por = self.request.user
-    #     form.instance.alterado_por = self.request.user
-    #     return super().form_valid(form)
+    def form_valid(self, form):
+        form.instance.cadastrado_por = self.request.user
+        form.instance.alterado_por = self.request.user
+        return super().form_valid(form)
 
 
 #########################################################################################################################
 
 
-class EmpresaUpdate(UpdateView, LoginRequiredMixin):
+class EmpresaUpdate(UpdateView, LoginRequiredMixin, UserPassesTestMixin):
     model = Empresa
     fields = ["nome", "email", "telefone", "documento", "endereco"]
     template_name = "cadastros/form.html"
@@ -129,9 +149,19 @@ class EmpresaUpdate(UpdateView, LoginRequiredMixin):
         dados["titulo"] = "Alterar Empresa"
         return dados
     
-    # def form_valid(self, form):
-    #     form.instance.alterado_por = self.request.user
-    #     return super().form_valid(form)
+    def form_valid(self, form):
+        form.instance.alterado_por = self.request.user
+        return super().form_valid(form)
+    
+    def get_queryset(self):
+        self.object_list = Empresa.objects.filter(cadastrado_por=self.request.user)
+        return self.object_list
+
+    def test_func(self):
+        return self.request.user.is_superuser or self.request.user.groups.filter(name='admin').exists()
+
+    def handle_no_permission(self):
+        return redirect('login')
     
 
 
@@ -146,9 +176,9 @@ class CategoriaUpdate(UpdateView, LoginRequiredMixin):
         dados["titulo"] = "Alterar Categoria"
         return dados
     
-    # def form_valid(self, form):
-    #     form.instance.alterado_por = self.request.user
-    #     return super().form_valid(form)
+    def form_valid(self, form):
+        form.instance.alterado_por = self.request.user
+        return super().form_valid(form)
     
 
 
@@ -165,9 +195,9 @@ class SubcategoriaUpdate(UpdateView, LoginRequiredMixin):
         dados["titulo"] = "Alterar Subcategoria"
         return dados
 
-    # def form_valid(self, form):
-    #     form.instance.alterado_por = self.request.user
-    #     return super().form_valid(form)
+    def form_valid(self, form):
+        form.instance.alterado_por = self.request.user
+        return super().form_valid(form)
     
 
 
@@ -183,9 +213,13 @@ class PromocaoUpdate(UpdateView, LoginRequiredMixin):
         dados["titulo"] = "Alterar Promoção"
         return dados
     
-    # def form_valid(self, form):
-    #     form.instance.alterado_por = self.request.user
-    #     return super().form_valid(form)
+    def form_valid(self, form):
+        form.instance.alterado_por = self.request.user
+        return super().form_valid(form)
+    
+    def get_queryset(self):
+        self.object_list = Promocao.objects.filter(cadastrado_por=self.request.user)
+        return self.object_list
 
 
 
@@ -200,9 +234,9 @@ class ProdutoUpdate(UpdateView, LoginRequiredMixin):
         dados["titulo"] = "Alterar Produto"
         return dados
     
-    # def form_valid(self, form):
-    #     form.instance.alterado_por = self.request.user
-    #     return super().form_valid(form)
+    def form_valid(self, form):
+        form.instance.alterado_por = self.request.user
+        return super().form_valid(form)
 
 
 class VendaUpdate(UpdateView, LoginRequiredMixin):
@@ -217,19 +251,28 @@ class VendaUpdate(UpdateView, LoginRequiredMixin):
         dados["titulo"] = "Alterar Venda"
         return dados
     
-    # def form_valid(self, form):
-    #     form.instance.alterado_por = self.request.user
-    #     return super().form_valid(form)
+    def form_valid(self, form):
+        form.instance.alterado_por = self.request.user
+        return super().form_valid(form)
     
 
 #########################################################################################################
 
 
-class EmpresaDelete(DeleteView, LoginRequiredMixin):
+class EmpresaDelete(DeleteView, LoginRequiredMixin, UserPassesTestMixin):
     model = Empresa
     template_name = "cadastros/delete.html"
     success_url = reverse_lazy("listar-empresa")
 
+    def get_queryset(self):
+        self.object_list = Empresa.objects.filter(cadastrado_por=self.request.user)
+        return self.object_list
+
+    def test_func(self):
+        return self.request.user.is_superuser or self.request.user.groups.filter(name='admin').exists()
+
+    def handle_no_permission(self):
+        return redirect('login')
 
 
 class CategoriaDelete(DeleteView, LoginRequiredMixin):
@@ -250,6 +293,10 @@ class PromocaoDelete(DeleteView, LoginRequiredMixin):
     model = Promocao
     template_name = "cadastros/delete.html"
     success_url = reverse_lazy("listar-promocao")
+
+    def get_queryset(self):
+        self.object_list = Promocao.objects.filter(cadastrado_por=self.request.user)
+        return self.object_list
 
 
 
@@ -272,13 +319,23 @@ class VendaDelete(DeleteView, LoginRequiredMixin):
 ##################################################
 
 
-class EmpresaList(ListView, LoginRequiredMixin):
+class EmpresaList(ListView, LoginRequiredMixin, UserPassesTestMixin):
     model = Empresa
     template_name = "cadastros/list/empresa.html"
 
-    # def get_queryset(self):
-    #     self.object_list = Empresa.objects.filter(cadastrado_por=self.request.user)
-    #     return self.object_list
+    def get_queryset(self):
+        self.object_list = Empresa.objects.filter(cadastrado_por=self.request.user)
+        return self.object_list
+    
+    def get_queryset(self):
+        self.object_list = Empresa.objects.filter(cadastrado_por=self.request.user)
+        return self.object_list
+
+    def test_func(self):
+        return self.request.user.is_superuser or self.request.user.groups.filter(name='admin').exists()
+
+    def handle_no_permission(self):
+        return redirect('login')
 
 
 class CategoriaList(ListView, LoginRequiredMixin):
@@ -295,6 +352,14 @@ class PromocaoList(ListView, LoginRequiredMixin):
     model = Promocao
     template_name = "cadastros/list/promocao.html"
 
+    def get_queryset(self):
+        self.object_list = Promocao.objects.filter(cadastrado_por=self.request.user)
+        return self.object_list
+
+    def get_queryset(self):
+        self.object_list = Promocao.objects.filter(cadastrado_por=self.request.user)
+        return self.object_list
+
 
 class ProdutoList(ListView, LoginRequiredMixin):
     model = Produto
@@ -308,9 +373,15 @@ class VendaList(ListView, LoginRequiredMixin):
 ##################################################
 
 
-class EmpresaDetail(DetailView, LoginRequiredMixin):
+class EmpresaDetail(DetailView, LoginRequiredMixin, UserPassesTestMixin):
     model = Empresa
     template_name = "cadastros/detail/empresa.html"
+
+    def test_func(self):
+        return self.request.user.is_superuser or self.request.user.groups.filter(name='admin').exists()
+
+    def handle_no_permission(self):
+        return redirect('login')
 
 
 class CategoriaDetail(DetailView, LoginRequiredMixin):
@@ -339,3 +410,68 @@ class VendaDetail(DetailView, LoginRequiredMixin):
 
 
 ##################################################
+
+class UserRegisterView(CreateView):
+    form_class = CustomUserCreationForm
+    template_name = 'cadastros/form.html'
+    success_url = reverse_lazy('login')
+
+    def test_func(self):
+        return self.request.user.is_superuser or self.request.user.groups.filter(name='admin').exists()
+
+
+    def handle_no_permission(self):
+        return redirect('login')
+
+
+class UserListView(UserPassesTestMixin, ListView):
+    model = User
+    template_name = "cadastros/list/usuario.html"
+    context_object_name = "usuarios"
+
+    def test_func(self):
+        return self.request.user.is_superuser or self.request.user.groups.filter(name='admin').exists()
+
+    def handle_no_permission(self):
+        return redirect('login')
+    
+
+class UserUpdateView(UserPassesTestMixin, UpdateView):
+    model = User
+    template_name = "cadastros/form.html"
+    fields = ["username", "first_name", "last_name", "email"]
+    success_url = reverse_lazy("listar-usuarios")
+
+    def test_func(self):
+        return self.request.user.is_superuser or self.request.user.groups.filter(name='admin').exists()
+
+    def handle_no_permission(self):
+        return redirect('login')
+    
+
+class UserDeleteView(UserPassesTestMixin, DeleteView):
+    model = User
+    template_name = "cadastros/delete.html"
+    success_url = reverse_lazy("listar-usuarios")
+
+    def test_func(self):
+        return self.request.user.is_superuser or self.request.user.groups.filter(name='admin').exists()
+
+    def handle_no_permission(self):
+        return redirect('login')
+
+
+def home(request):
+    produtos = Produto.objects.order_by('-data_inclusao')[:5]
+    categorias = Categoria.objects.order_by('-nome')[:5]
+    subcategorias = Subcategoria.objects.order_by('-nome_subcategoria')[:5]
+    promocoes = Promocao.objects.order_by('-data_inicio')[:5]
+    vendas = Venda.objects.order_by('-data_venda')[:5]
+
+    return render(request, 'cadastros/list/home.html', {
+        'produtos': produtos,
+        'categorias': categorias,
+        'subcategorias': subcategorias,
+        'promocoes': promocoes,
+        'vendas': vendas,
+    })

@@ -1,0 +1,86 @@
+{% extends 'paginas/modelo.html' %}
+
+{% load static %}
+
+{% block conteudo %}
+<div class="container">
+    <h1 class="mt-5">Bem-vindo!</h1>
+
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <h2>Últimos Produtos</h2>
+            <ul class="list-group">
+                {% for produto in produtos %}
+                    <li class="list-group-item">
+                        <strong>{{ produto.nome_produto }}</strong>: {{ produto.descricao }} - R$ {{ produto.preco }} (Adicionado em {{ produto.data_inclusao }})
+                    </li>
+                {% empty %}
+                    <li class="list-group-item">Nenhum produto encontrado.</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="col-md-6">
+            <h2>Últimas Categorias</h2>
+            <ul class="list-group">
+                {% for categoria in categorias %}
+                    <li class="list-group-item">
+                        <strong>{{ categoria.nome }}</strong>: {{ categoria.descricao }}  (Adicionado em {{ categoria.data_inclusao }})
+                    </li>
+                {% empty %}
+                    <li class="list-group-item">Nenhuma categoria encontrada.</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <h2>Últimas Subcategorias</h2>
+            <ul class="list-group">
+                {% for subcategoria in subcategorias %}
+                    <li class="list-group-item">
+                        <strong>{{ subcategoria.nome_subcategoria }}</strong>: {{ subcategoria.descricao_subcategoria }} (Adicionado em {{ subcategoria.data_inclusao }})
+                    </li>
+                {% empty %}
+                    <li class="list-group-item">Nenhuma subcategoria encontrada.</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="col-md-6">
+            <h2>Últimas Promoções</h2>
+            <ul class="list-group">
+                {% for promocao in promocoes %}
+                    <li class="list-group-item">
+                        <strong>{{ promocao.titulo_promocao }}</strong>: {{ promocao.descricao }} (De {{ promocao.data_inicio }} até {{ promocao.data_fim }})
+                    </li>
+                {% empty %}
+                    <li class="list-group-item">Nenhuma promoção encontrada.</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <h2>Últimas Vendas</h2>
+            <ul class="list-group">
+                {% for venda in vendas %}
+                    <li class="list-group-item">
+                        <strong>Cliente: {{ venda.nome_cliente }}</strong> - Total: R$ {{ venda.total }} (Data: {{ venda.data_venda }}) 
+                    </li>
+                {% empty %}
+                    <li class="list-group-item">Nenhuma venda encontrada.</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS (opcional) -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+{% endblock %}
