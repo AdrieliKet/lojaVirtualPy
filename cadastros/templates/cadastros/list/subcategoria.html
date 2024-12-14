@@ -18,7 +18,7 @@
 <hr>
 
 <div class="table-responsive-lg">
-    <table class="table table-striped">
+    <table id="tabela-subcategorias" class="table table-striped">
         <thead>
             <tr>
                 <th>Nome</th>
@@ -40,10 +40,8 @@
                             <i class="bi bi-gear"></i>
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item text-primary" href="{% url 'editar-subcategoria' obj.pk %}">
-                                    <i class="bi bi-pencil-square"></i> Editar</a></li>
-                            <li><a class="dropdown-item text-danger" href="{% url 'excluir-subcategoria' obj.pk %}">
-                                    <i class="bi bi-trash"></i> Excluir</a></li>
+                            <li><a class="dropdown-item text-primary" href="{% url 'editar-subcategoria' obj.pk %}"><i class="bi bi-pencil-square"></i> Editar</a></li>
+                            <li><a class="dropdown-item text-danger" href="{% url 'excluir-subcategoria' obj.pk %}"><i class="bi bi-trash"></i> Excluir</a></li>
                         </ul>
                     </div>
                 </td>
@@ -57,5 +55,21 @@
     </table>
 </div>
 
+<!-- Incluindo jQuery e DataTables -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+
+<!-- Inicializando o DataTables -->
+<script>
+    $(document).ready(function() {
+        // Inicializa o DataTables na tabela de subcategorias
+        $('#tabela-subcategorias').DataTable({
+            "paging": true,           // Habilita a paginação
+            "searching": true,        // Habilita a busca
+            "ordering": true,         // Habilita a ordenação
+            "info": true              // Exibe informações sobre o total de registros
+        });
+    });
+</script>
 
 {% endblock %}

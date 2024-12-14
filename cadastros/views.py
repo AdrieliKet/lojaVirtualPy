@@ -1,7 +1,7 @@
 from typing import Any, Optional
 from django.db import models
 from django.db.models.query import QuerySet
-from .models import Empresa, Categoria, Subcategoria, Promocao, Produto, Venda
+from .models import Empresa, Categoria, Subcategoria, Promocao, Produto, Venda, MovimentoEstoque
 from django.urls import reverse_lazy
 
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
@@ -81,6 +81,9 @@ class SubcategoriaCreate(CreateView, LoginRequiredMixin):
         form.instance.cadastrado_por = self.request.user
         form.instance.alterado_por = self.request.user
         return super().form_valid(form)
+    
+    def get_queryset(self):
+        return Subcategoria.objects.select_related("categoria_principal")
 
 
 class PromocaoCreate(CreateView, LoginRequiredMixin):
@@ -102,7 +105,7 @@ class PromocaoCreate(CreateView, LoginRequiredMixin):
 
 class ProdutoCreate(CreateView, LoginRequiredMixin):
     model = Produto
-    fields = ["nome_produto", "descricao", "preco", "subcategoria"]
+    fields = ["nome_produto", "descricao", "preco", "subcategoria", "quantidade_estoque"]
     template_name = "cadastros/form.html"
     success_url = reverse_lazy("listar-produto")
 
@@ -115,12 +118,15 @@ class ProdutoCreate(CreateView, LoginRequiredMixin):
         form.instance.cadastrado_por = self.request.user
         form.instance.alterado_por = self.request.user
         return super().form_valid(form)
+    
+    def get_queryset(self):
+        return Produto.objects.select_related("subcategoria")
 
 
 class VendaCreate(CreateView, LoginRequiredMixin):
     model = Venda
-    fields = ["nome_cliente", "endereco_montagem", "promocao",
-              "telefone_cliente", "data_venda", "total", "data_pagamento", "pago", "pegue_monte"]
+    fields = ["nome_cliente", "endereco_montagem", "promocao", "telefone_cliente", "data_venda",
+               "total", "data_pagamento", "pago", "pegue_monte", "produto", "quantidade"]
     template_name = "cadastros/form.html"
     success_url = reverse_lazy("listar-venda")
 
@@ -132,7 +138,39 @@ class VendaCreate(CreateView, LoginRequiredMixin):
     def form_valid(self, form):
         form.instance.cadastrado_por = self.request.user
         form.instance.alterado_por = self.request.user
+        # Salva a venda
+        venda = form.save()
+
+        # Lógica para atualizar o estoque e criar o movimento de estoque
+        produto = venda.produto
+        quantidade = venda.quantidade
+
+        if produto.quantidade_estoque < quantidade:
+            # Se o estoque não for suficiente, lança um erro
+            form.add_error('quantidade', 'Estoque insuficiente para esta venda.')
+            return self.form_invalid(form)
+
+        # Cria um movimento de estoque (Saída, pois é uma venda)
+        MovimentoEstoque.objects.create(
+            produto=produto,
+            tipo_movimento=MovimentoEstoque.SAIDA,
+            quantidade_movimentada=quantidade,
+            descricao=f"Venda para {venda.nome_cliente}"
+        )
+
+        # Atualiza o estoque do produto
+        produto.quantidade_estoque -= quantidade
+        produto.save()
+
         return super().form_valid(form)
+
+    
+    def get_queryset(self):
+        return Venda.objects.select_related("promocao")
+    
+
+
+
 
 
 #########################################################################################################################
@@ -225,7 +263,7 @@ class PromocaoUpdate(UpdateView, LoginRequiredMixin):
 
 class ProdutoUpdate(UpdateView, LoginRequiredMixin):
     model = Produto
-    fields = ["nome_produto", "descricao", "preco", "subcategoria"]
+    fields = ["nome_produto", "descricao", "preco", "subcategoria", "quantidade_estoque"]
     template_name = "cadastros/form.html"
     success_url = reverse_lazy("listar-produto")
 
@@ -241,8 +279,8 @@ class ProdutoUpdate(UpdateView, LoginRequiredMixin):
 
 class VendaUpdate(UpdateView, LoginRequiredMixin):
     model = Venda
-    fields = ["nome_cliente", "endereco_montagem", "pegue_monte", "promocao",
-              "telefone_cliente", "data_venda", "total", "pago", "data_pagamento"]
+    fields = ["nome_cliente", "endereco_montagem", "pegue_monte", "promocao", "telefone_cliente",
+               "data_venda", "total", "pago", "data_pagamento" "produto", "quantidade"]
     template_name = "cadastros/form.html"
     success_url = reverse_lazy("listar-venda")
 
@@ -347,6 +385,9 @@ class SubcategoriaList(ListView, LoginRequiredMixin):
     model = Subcategoria
     template_name = "cadastros/list/subcategoria.html"
 
+    def get_queryset(self):
+        return Subcategoria.objects.select_related("categoria_principal")
+
 
 class PromocaoList(ListView, LoginRequiredMixin):
     model = Promocao
@@ -365,10 +406,16 @@ class ProdutoList(ListView, LoginRequiredMixin):
     model = Produto
     template_name = "cadastros/list/produto.html"
 
+    def get_queryset(self):
+        return Produto.objects.select_related("subcategoria")
+
 
 class VendaList(ListView, LoginRequiredMixin):
     model = Venda
     template_name = "cadastros/list/venda.html"
+
+    def get_queryset(self):
+        return Venda.objects.select_related("promocao")
 
 ##################################################
 
@@ -462,11 +509,11 @@ class UserDeleteView(UserPassesTestMixin, DeleteView):
 
 
 def home(request):
-    produtos = Produto.objects.order_by('-data_inclusao')[:5]
+    produtos = Produto.objects.select_related("subcategoria").order_by('-data_inclusao')[:5]
     categorias = Categoria.objects.order_by('-nome')[:5]
-    subcategorias = Subcategoria.objects.order_by('-nome_subcategoria')[:5]
+    subcategorias = Subcategoria.objects.select_related("categoria_principal").order_by('-nome_subcategoria')[:5]
     promocoes = Promocao.objects.order_by('-data_inicio')[:5]
-    vendas = Venda.objects.order_by('-data_venda')[:5]
+    vendas = Venda.objects.select_related("promocao").order_by('-data_venda')[:5]
 
     return render(request, 'cadastros/list/home.html', {
         'produtos': produtos,

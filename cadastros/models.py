@@ -91,6 +91,7 @@ class Produto(models.Model):
     subcategoria = models.ForeignKey(Subcategoria, on_delete=models.PROTECT)
     cadastrado_por = models.ForeignKey(User, on_delete=models.PROTECT, null=True, related_name='produto_cadastrado')
     alterado_por = models.ForeignKey(User, on_delete=models.PROTECT, null=True, related_name='produto_atualizado')
+    quantidade_estoque = models.PositiveIntegerField(default=0)
 
 
     def __str__(self):
@@ -118,7 +119,33 @@ class Venda(models.Model):
         User, on_delete=models.PROTECT, null=True, related_name='venda_cadastrada')
     alterado_por = models.ForeignKey(
         User, on_delete=models.PROTECT, null=True, related_name='venda_atualizada')
+    produto = models.ForeignKey(Produto, on_delete=models.CASCADE)
+    quantidade = models.PositiveIntegerField()
 
 
     def __str__(self):
         return f"{self.nome_cliente} ({self.data_venda})"
+    
+
+
+class MovimentoEstoque(models.Model):
+    ENTRADA = 'E'
+    SAIDA = 'S'
+
+    TIPO_MOVIMENTO_CHOICES = [
+        (ENTRADA, 'Entrada'),
+        (SAIDA, 'Saída'),
+    ]
+
+    produto = models.ForeignKey(Produto, on_delete=models.CASCADE)
+    tipo_movimento = models.CharField(
+        max_length=1,
+        choices=TIPO_MOVIMENTO_CHOICES,
+    )
+    quantidade_movimentada = models.PositiveIntegerField()
+    descricao = models.CharField(max_length=255)
+    data_movimento = models.DateTimeField(
+        auto_now=True, verbose_name="data movimento")
+    
+    def __str__(self):
+        return f"{self.get_tipo_movimento_display()} - {self.produto.nome} - {self.quantidade_movimentada}"

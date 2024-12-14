@@ -1,10 +1,10 @@
-{% extends "paginas/modelo.html" %} 
+{% extends "paginas/modelo.html" %}
 
-{% load static %} 
+{% load static %}
 
 {% load crispy_forms_tags %}
 
-{%block conteudo %} 
+{%block conteudo %}
 <h1 class="mt-5">{{ titulo|default:"Formulário de cadastro e edição" }}</h1>
 
 <form action="" method="post">
@@ -16,5 +16,70 @@
         Salvar
     </button>
 </form>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        // Aplicando o calendário ao campo "data_venda"
+        $("#id_data_venda").datepicker({
+            dateFormat: "dd/mm/yy"  // Formato da data
+        });
+
+        // Aplicando o calendário ao campo "data_pagamento"
+        $("#id_data_pagamento").datepicker({
+            dateFormat: "dd/mm/yy"  // Formato da data
+        });
+
+        // Aplicando o calendário ao campo "data_inicio"
+        $("#id_data_inicio").datepicker({
+            dateFormat: "dd/mm/yy"  // Formato da data
+        });
+
+        // Aplicando o calendário ao campo "data_fim"
+        $("#id_data_fim").datepicker({
+            dateFormat: "dd/mm/yy"  // Formato da data
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function(){
+        // Máscara para o campo de telefone
+        $("#id_telefone").mask("(00) 00000-0000");
+        $("#id_telefone_cliente").mask("(00) 00000-0000");
+
+        // Máscara para o campo de e-mail
+        $("#id_email").on('blur', function(){
+            var email = $(this).val();
+
+            if (!/\S+@\S+\.\S+/.test(email)) {
+                alert('Por favor, insira um e-mail válido.');
+            }
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function(){
+        // Aplicando máscara para CPF ou CNPJ
+        $("#id_documento").on('input', function(){
+            var valor = $(this).val().replace(/\D/g, '');
+            // Verificar se o valor tem 11 ou 14 dígitos
+            if (valor.length >= 11) {
+                // Máscara para CNPJ (xx.xxx.xxx/xxxx-xx)
+                $(this).mask("00.000.000/0000-00");
+                
+            } else {
+                // Máscara para CPF (xxx.xxx.xxx-xx)
+                $(this).mask("000.000.000-00");
+            }
+        });
+    });
+</script>
 
 {% endblock %}

@@ -18,13 +18,14 @@
 <hr>
 
 <div class="table-responsive-lg">
-    <table class="table table-striped">
+    <table id="tabela-produtos" class="table table-striped">
         <thead>
             <tr>
                 <th>Nome</th>
                 <th>Descrição</th>
                 <th>Categoria Principal</th>
                 <th>Subcategoria</th>
+                <th>Quantidade</th>
                 <th></th>
             </tr>
         </thead>
@@ -33,8 +34,9 @@
             <tr class="">
                 <td>{{ obj.nome_produto }}</td>
                 <td>{{ obj.descricao }}</td>
-                <td>{{ obj.preco }}</td>
+                <td>{{ obj.categoria_principal }}</td>
                 <td>{{ obj.subcategoria }}</td>
+                <td>{{ obj.quantidade_estoque }}</td>
                 <td>
                     <div class="dropdown">
                         <a class="btn btn-sm btn-outline-secondary dropdown-toggle" href="#" role="button"
@@ -59,5 +61,21 @@
     </table>
 </div>
 
+<!-- Incluindo jQuery e DataTables -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+
+<!-- Inicializando o DataTables -->
+<script>
+    $(document).ready(function() {
+        // Inicializa o DataTables na tabela de produtos
+        $('#tabela-produtos').DataTable({
+            "paging": true,           // Habilita a paginação
+            "searching": true,        // Habilita a busca
+            "ordering": true,         // Habilita a ordenação
+            "info": true              // Exibe informações sobre o total de registros
+        });
+    });
+</script>
 
 {% endblock %}
