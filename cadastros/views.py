@@ -3,6 +3,9 @@ from django.db import models
 from django.db.models.query import QuerySet
 from .models import Empresa, Categoria, Subcategoria, Promocao, Produto, Venda, MovimentoEstoque
 from django.urls import reverse_lazy
+from django_filters.views import FilterView
+from .filters import EmpresaFilter, CategoriaFilter, SubcategoriaFilter, PromocaoFilter, ProdutoFilter, VendaFilter
+
 
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic.list import ListView
@@ -357,9 +360,11 @@ class VendaDelete(DeleteView, LoginRequiredMixin):
 ##################################################
 
 
-class EmpresaList(ListView, LoginRequiredMixin, UserPassesTestMixin):
+class EmpresaList(FilterView, LoginRequiredMixin, UserPassesTestMixin):
     model = Empresa
     template_name = "cadastros/list/empresa.html"
+    context_object_name = 'object_list'
+    filterset_class = EmpresaFilter
 
     def get_queryset(self):
         self.object_list = Empresa.objects.filter(cadastrado_por=self.request.user)
@@ -376,22 +381,28 @@ class EmpresaList(ListView, LoginRequiredMixin, UserPassesTestMixin):
         return redirect('login')
 
 
-class CategoriaList(ListView, LoginRequiredMixin):
+class CategoriaList(FilterView, LoginRequiredMixin):
     model = Categoria
     template_name = "cadastros/list/categoria.html"
+    context_object_name = 'object_list'
+    filterset_class = CategoriaFilter
 
 
-class SubcategoriaList(ListView, LoginRequiredMixin):
+class SubcategoriaList(FilterView, LoginRequiredMixin):
     model = Subcategoria
     template_name = "cadastros/list/subcategoria.html"
+    context_object_name = 'object_list'
+    filterset_class =SubcategoriaFilter
 
     def get_queryset(self):
         return Subcategoria.objects.select_related("categoria_principal")
 
 
-class PromocaoList(ListView, LoginRequiredMixin):
+class PromocaoList(FilterView, LoginRequiredMixin):
     model = Promocao
     template_name = "cadastros/list/promocao.html"
+    context_object_name = 'object_list'
+    filterset_class = PromocaoFilter
 
     def get_queryset(self):
         self.object_list = Promocao.objects.filter(cadastrado_por=self.request.user)
@@ -402,17 +413,21 @@ class PromocaoList(ListView, LoginRequiredMixin):
         return self.object_list
 
 
-class ProdutoList(ListView, LoginRequiredMixin):
+class ProdutoList(FilterView, LoginRequiredMixin):
     model = Produto
     template_name = "cadastros/list/produto.html"
+    context_object_name = 'object_list'
+    filterset_class = ProdutoFilter
 
     def get_queryset(self):
         return Produto.objects.select_related("subcategoria")
 
 
-class VendaList(ListView, LoginRequiredMixin):
+class VendaList(FilterView, LoginRequiredMixin):
     model = Venda
     template_name = "cadastros/list/venda.html"
+    context_object_name = 'object_list'
+    filterset_class = VendaFilter
 
     def get_queryset(self):
         return Venda.objects.select_related("promocao")

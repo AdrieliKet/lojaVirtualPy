@@ -15,6 +15,12 @@
     </div>
 </div>
 
+<form method="get" class="mb-3">
+    {{ filter.form.as_p }}
+    <button type="submit" class="btn btn-primary">Filtrar</button>
+    <a href="{% url 'listar-subcategoria' %}" class="btn btn-secondary">Limpar Filtros</a>
+</form>
+
 <hr>
 
 <div class="table-responsive-lg">
@@ -48,7 +54,10 @@
             </tr>
             {% empty %}
             <tr>
-                <th colspan="100%">Nenhum registro encontrado.</th>
+                <td colspan="100%" class="text-center">Nenhum registro encontrado.</td>
+                <td></td>
+                <td></td>
+                <td></td>
             </tr>
             {% endfor %}
         </tbody>
